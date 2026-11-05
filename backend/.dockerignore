@@ -1,0 +1,29 @@
+.git
+.gitignore
+node_modules
+dist
+coverage
+src/generated
+
+# Segredos locais
+.env
+.env.*
+
+# Testes e documentação não usados na imagem
+test
+docs
+openspec
+prompts-specs
+*.md
+endpoints-treinadesk-api.yaml
+
+# Ferramentas de agentes e editores
+.claude
+.agents
+.windsurf
+.vscode
+.idea
+skills-lock.json
+
+Dockerfile
+.dockerignore

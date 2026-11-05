@@ -1,0 +1,38 @@
+schema: spec-driven
+
+context: |
+  Language: pt-BR
+  All artifacts must be written in pt-BR.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Every change MUST follow docs/frontend-guidelines.md (general frontend guidelines)
+  and MUST consult docs/api-reference.md (API contract) before writing specs or code.
+  Key constraints: the API is a third-party public API (never read or modify the local
+  API project); the browser never calls the API (server-first / BFF); auth tokens live
+  only in httpOnly cookies; zod validation with pt-BR messages; Vitest for unit tests and
+  Playwright e2e against the real API; every page/component is responsive.
+
+rules:
+  proposal:
+    - Reference docs/frontend-guidelines.md and the relevant sections of docs/api-reference.md
+  design:
+    - Explain where data is fetched/mutated server-side (Server Component, Server Action or Route Handler) and confirm no browser-to-API calls
+    - If the change touches auth, follow the refresh rules in docs/frontend-guidelines.md section 3 (no refresh inside Server Components, single-flight)
+  specs:
+    - Include scenarios for API error statuses relevant to the feature (400/401/403/404/409/422) with pt-BR user messages
+    - Include responsive behavior requirements (mobile and desktop)
+  tasks:
+    - Include tasks for zod validation, Vitest unit tests and Playwright e2e (desktop + mobile) when applicable
+    - Below each task, the implementer MUST add one line "> Implementação: ..." describing how it was implemented, or "> Impeditivo: ..." describing what blocked it (see docs/frontend-guidelines.md section 7)
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

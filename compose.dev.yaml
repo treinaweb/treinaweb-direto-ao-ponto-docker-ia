@@ -1,0 +1,70 @@
+# Ambiente de desenvolvimento. Uso:
+#   docker compose -f compose.yaml -f compose.dev.yaml up --build
+# Sem os dois -f, o Compose usa só o compose.yaml e sobe o ambiente de produção.
+
+# Projeto próprio: containers, rede e volumes separados dos de produção.
+name: treinadesk-docker-ia-dev
+
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  migrate:
+    build:
+      target: dev
+    volumes:
+      - ./backend:/app
+      - backend-node-modules:/app/node_modules
+    command:
+      - sh
+      - -c
+      - >-
+        { cmp -s package-lock.json node_modules/.dev-package-lock ||
+        { npm ci --no-audit --no-fund && cp package-lock.json node_modules/.dev-package-lock; }; } &&
+        npx prisma generate --config prisma7.config.ts &&
+        npx prisma migrate deploy --config prisma7.config.ts &&
+        npx prisma db seed --config prisma7.config.ts
+
+  backend:
+    build:
+      target: dev
+    init: true
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./backend:/app
+      - backend-node-modules:/app/node_modules
+    command:
+      - sh
+      - -c
+      - >-
+        { cmp -s package-lock.json node_modules/.dev-package-lock ||
+        { npm ci --no-audit --no-fund && cp package-lock.json node_modules/.dev-package-lock; }; } &&
+        npx prisma generate --config prisma7.config.ts &&
+        exec npm run start:dev
+    healthcheck:
+      # A subida pode incluir npm ci e a primeira compilação.
+      start_period: 180s
+
+  frontend:
+    build:
+      target: dev
+    init: true
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    command:
+      - sh
+      - -c
+      - >-
+        { cmp -s package-lock.json node_modules/.dev-package-lock ||
+        { npm ci --no-audit --no-fund && cp package-lock.json node_modules/.dev-package-lock; }; } &&
+        exec npm run dev
+    healthcheck:
+      # A subida pode incluir npm ci e a primeira renderização sob demanda.
+      start_period: 180s
+
+volumes:
+  backend-node-modules:
+  frontend-node-modules:

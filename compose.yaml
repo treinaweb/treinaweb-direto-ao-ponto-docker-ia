@@ -1,0 +1,87 @@
+name: treinadesk-docker-ia
+
+x-database-url: &database-url postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}@postgres:5432/${POSTGRES_DB:-treinadesk}?schema=public
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-treinadesk}
+    volumes:
+      # A partir da versão 18, a imagem guarda os dados em um subdiretório por versão.
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Execução única: aplica as migrations e cria ou restaura o ADMIN e os dados de teste.
+  migrate:
+    build:
+      context: ./backend
+      target: migrate
+    environment:
+      # O seed só grava os dados de teste fora de produção.
+      NODE_ENV: development
+      DATABASE_URL: *database-url
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@treinadesk.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Defina ADMIN_PASSWORD no .env}
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    # Como PID 1, o Node ignora SIGTERM e seria morto à força após 10 s.
+    init: true
+    environment:
+      DATABASE_URL: *database-url
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Defina JWT_ACCESS_SECRET no .env}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/docs-json').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # Apenas uma réplica: o refresh single-flight fica em memória de processo.
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      API_BASE_URL: http://backend:3000
+    ports:
+      - "3001:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/login').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  postgres-data:

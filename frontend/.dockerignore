@@ -1,0 +1,29 @@
+.git
+.gitignore
+node_modules
+.next
+coverage
+
+# Segredos locais
+.env
+.env.*
+
+# Testes e2e e documentação não usados na imagem
+e2e
+playwright.config.ts
+playwright-report
+test-results
+docs
+openspec
+*.md
+endpoints-treinadesk-api.yaml
+
+# Ferramentas de agentes e editores
+.claude
+.agents
+.vscode
+.idea
+.vercel
+
+Dockerfile
+.dockerignore

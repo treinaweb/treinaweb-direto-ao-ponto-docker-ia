@@ -1,0 +1,250 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark {
+  &:is(.dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:not(:is(.light *)) {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-primary-pressed: var(--primary-pressed);
+  /* Nota interna dos comentários (tom âmbar, com valores próprios no tema escuro). */
+  --color-internal-note: var(--internal-note);
+  --color-internal-note-foreground: var(--internal-note-foreground);
+  --color-internal-note-accent: var(--internal-note-accent);
+  --color-internal-note-border: var(--internal-note-border);
+  /* Paleta fixa do design system (igual nos dois temas): chips, cartões KPI e gráficos. */
+  --color-primary-soft: var(--ds-primary-soft);
+  --color-primary-deep: var(--ds-primary-deep);
+  --color-ink: var(--ds-ink);
+  --color-cloud: var(--ds-cloud);
+  --color-fog: var(--ds-fog);
+  --color-steel: var(--ds-steel);
+  --color-graphite: var(--ds-graphite);
+  --color-charcoal: var(--ds-charcoal);
+  --color-on-ink: var(--ds-on-ink);
+  --color-bloom-deep: var(--ds-bloom-deep);
+  --color-bloom-coral: var(--ds-bloom-coral);
+  --color-bloom-rose: var(--ds-bloom-rose);
+  --color-storm-mist: var(--ds-storm-mist);
+  --color-storm-sea: var(--ds-storm-sea);
+  --color-storm-deep: var(--ds-storm-deep);
+  --color-chart-blue: var(--ds-chart-blue);
+  --color-chart-mint: var(--ds-chart-mint);
+  --color-chart-green: var(--ds-chart-green);
+  --color-chart-violet: var(--ds-chart-violet);
+  --radius-panel: 1rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Tokens do design system TreinaDesk (components/ui/references/design-system.md)
+ * mapeados para as variáveis do shadcn. Tema claro: canvas branco, painéis
+ * cloud, tinta ink e Electric Blue como única cor de ação.
+ */
+:root {
+  --ds-primary: #024ad8;
+  --ds-primary-bright: #296ef9;
+  --ds-primary-deep: #0e3191;
+  --ds-primary-soft: #c9e0fc;
+  --ds-canvas: #ffffff;
+  --ds-cloud: #f7f7f7;
+  --ds-fog: #e8e8e8;
+  --ds-steel: #c2c2c2;
+  --ds-ink: #1a1a1a;
+  --ds-ink-soft: #292929;
+  --ds-charcoal: #3d3d3d;
+  --ds-graphite: #636363;
+  --ds-on-ink: #ffffff;
+  --ds-bloom-deep: #b3262b;
+  --ds-bloom-coral: #ff5050;
+  --ds-bloom-rose: #f9d4d2;
+  --ds-storm-mist: #8ebdce;
+  --ds-storm-sea: #7fadbe;
+  --ds-storm-deep: #356373;
+  /* Paleta de gráficos (referências Dashboard-reference-*.png). */
+  --ds-chart-blue: #a0bce8;
+  --ds-chart-mint: #6de0cd;
+  --ds-chart-green: #71dd8c;
+  --ds-chart-violet: #b899eb;
+
+  --background: var(--ds-canvas);
+  --foreground: var(--ds-ink);
+  --card: var(--ds-cloud);
+  --card-foreground: var(--ds-ink);
+  --popover: var(--ds-canvas);
+  --popover-foreground: var(--ds-ink);
+  --primary: var(--ds-primary);
+  --primary-foreground: var(--ds-on-ink);
+  --primary-pressed: var(--ds-primary-deep);
+  --secondary: var(--ds-fog);
+  --secondary-foreground: var(--ds-ink);
+  --muted: var(--ds-cloud);
+  --muted-foreground: var(--ds-graphite);
+  --accent: var(--ds-fog);
+  --accent-foreground: var(--ds-ink);
+  --destructive: var(--ds-bloom-deep);
+  --info: var(--ds-primary-soft);
+  --info-foreground: var(--ds-ink);
+  --border: var(--ds-fog);
+  --input: var(--ds-steel);
+  --ring: var(--ds-primary);
+  --chart-1: var(--ds-storm-mist);
+  --chart-2: var(--ds-storm-sea);
+  --chart-3: var(--ds-storm-deep);
+  --chart-4: var(--ds-primary);
+  --chart-5: var(--ds-primary-soft);
+  /* Botões e inputs: 4px. Painéis: 16px (rounded-panel). */
+  --radius: 0.25rem;
+  --sidebar: var(--ds-canvas);
+  --sidebar-foreground: var(--ds-ink);
+  --sidebar-primary: var(--ds-primary);
+  --sidebar-primary-foreground: var(--ds-on-ink);
+  --sidebar-accent: var(--ds-cloud);
+  --sidebar-accent-foreground: var(--ds-ink);
+  --sidebar-border: var(--ds-fog);
+  --sidebar-ring: var(--ds-primary);
+  /* Nota interna: ink sobre âmbar 15.4:1, rótulo 6.6:1, borda 3.2:1 (AA). */
+  --internal-note: #fdf0d5;
+  --internal-note-foreground: var(--ds-ink);
+  --internal-note-accent: #7a4b00;
+  --internal-note-border: #b7791f;
+}
+
+/* Tema escuro: canvas ink-soft, painéis charcoal, texto on-ink, azul bright. */
+.dark {
+  --background: var(--ds-ink-soft);
+  --foreground: var(--ds-on-ink);
+  --card: var(--ds-charcoal);
+  --card-foreground: var(--ds-on-ink);
+  --popover: var(--ds-charcoal);
+  --popover-foreground: var(--ds-on-ink);
+  --primary: var(--ds-primary-bright);
+  --primary-foreground: var(--ds-on-ink);
+  --primary-pressed: var(--ds-primary);
+  --secondary: var(--ds-charcoal);
+  --secondary-foreground: var(--ds-on-ink);
+  --muted: var(--ds-charcoal);
+  --muted-foreground: var(--ds-steel);
+  --accent: var(--ds-charcoal);
+  --accent-foreground: var(--ds-on-ink);
+  --destructive: var(--ds-bloom-coral);
+  --info: var(--ds-primary-soft);
+  --info-foreground: var(--ds-ink);
+  --border: var(--ds-charcoal);
+  --input: var(--ds-graphite);
+  --ring: var(--ds-primary-bright);
+  --sidebar: var(--ds-ink-soft);
+  --sidebar-foreground: var(--ds-on-ink);
+  --sidebar-primary: var(--ds-primary-bright);
+  --sidebar-primary-foreground: var(--ds-on-ink);
+  --sidebar-accent: var(--ds-charcoal);
+  --sidebar-accent-foreground: var(--ds-on-ink);
+  --sidebar-border: var(--ds-charcoal);
+  --sidebar-ring: var(--ds-primary-bright);
+  /* Nota interna: on-ink sobre âmbar escuro 11.4:1, rótulo 7.3:1, borda 5.2:1 (AA). */
+  --internal-note: #4a3712;
+  --internal-note-foreground: var(--ds-on-ink);
+  --internal-note-accent: #f6c86b;
+  --internal-note-border: #e0a43a;
+}
+
+/* Sem seletor de tema ainda: segue a preferência do sistema (exceto .light). */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: var(--ds-ink-soft);
+    --foreground: var(--ds-on-ink);
+    --card: var(--ds-charcoal);
+    --card-foreground: var(--ds-on-ink);
+    --popover: var(--ds-charcoal);
+    --popover-foreground: var(--ds-on-ink);
+    --primary: var(--ds-primary-bright);
+    --primary-foreground: var(--ds-on-ink);
+    --primary-pressed: var(--ds-primary);
+    --secondary: var(--ds-charcoal);
+    --secondary-foreground: var(--ds-on-ink);
+    --muted: var(--ds-charcoal);
+    --muted-foreground: var(--ds-steel);
+    --accent: var(--ds-charcoal);
+    --accent-foreground: var(--ds-on-ink);
+    --destructive: var(--ds-bloom-coral);
+    --info: var(--ds-primary-soft);
+    --info-foreground: var(--ds-ink);
+    --border: var(--ds-charcoal);
+    --input: var(--ds-graphite);
+    --ring: var(--ds-primary-bright);
+    --sidebar: var(--ds-ink-soft);
+    --sidebar-foreground: var(--ds-on-ink);
+    --sidebar-primary: var(--ds-primary-bright);
+    --sidebar-primary-foreground: var(--ds-on-ink);
+    --sidebar-accent: var(--ds-charcoal);
+    --sidebar-accent-foreground: var(--ds-on-ink);
+    --sidebar-border: var(--ds-charcoal);
+    --sidebar-ring: var(--ds-primary-bright);
+    --internal-note: #4a3712;
+    --internal-note-foreground: var(--ds-on-ink);
+    --internal-note-accent: #f6c86b;
+    --internal-note-border: #e0a43a;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
